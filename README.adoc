@@ -1,238 +1,87 @@
 :imagesdir: Resimler
-# RobotikProje
+ 
+# Hierarchical Optimization for Pose Graphs  Kurulum Dokümantasyonu
 
-Adem ULU-120201019
+== Hog-Man Nedir?
 
-Gökçe EMİRBUYURAN-110201112
+HOG-Man, grafik tabanlı SLAM için bir optimizasyon yaklaşımıdır. Altta yatan alanın bir Öklid uzayı değil, bir manifold olduğunu düşünen oldukça etkili bir hata minimizasyon prosedürü sağlar. Ayrıca, çevrimiçi haritalama sırasında operasyonları son derece verimli bir şekilde gerçekleştirmek için kullanılan bir poz-grafikler hiyerarşisi üretir. Yaklaşım 2B ve 3B'de işe yarıyor.
 
-Husein SKRİJELJ-120201113
+== Telif Hakkı ve Lisans Bilgileri
 
-== 1.SLAM6D - Simultaneous Localization and Mapping with 6 DoF
+Bu yazılım, yararlı olacağı ümidi ile dağıtılır ancak herhangi bir garantisi olmadan; BELİRLİ BİR AMACA UYGUNLUK VEYA SATILABİLİRLİK KONUSUNDA ZIMNİ KAPSAM DIŞI TUTULAMAZ. 
+Yazarlar, OpenSLAM.org kullanıcılarının kaynak kodunu kendi araştırmaları için kullanmasına ve değiştirmesine izin verir. Herhangi bir ticari başvuru, yeniden dağıtım, vb. Kullanıcılar ve yazarlar arasında ayrı ayrı düzenlenmeli ve OpenSLAM.org tarafından kapsanmamaktadır. 
 
-==== Proje Hakkında Açıklama
-Bu proje, 3D nokta bulutlarını ortak bir koordinat sistemine kaydetmenin yanı sıra sahneyi görüntülemek için bir görüntüleyiciden oluşan bir yazılımdan oluşmaktadır. Kayıt için, genel olarak tutarlı bir sahne yaratmayı amaçlayan küresel gevşeme yöntemlerinin yanı sıra farklı ICP en aza indirme algoritmaları da seçilebilir. Nokta bulutları için çeşitli formatlar desteklenmekte, yeni formatlar kolayca uygulanabilmektedir.
+HOG-Man, LGPL v.3 kapsamında lisanslanmıştır.
 
-Projemiz ile ilgili örnek resimler:
+== Donanım / Yazılım Gereksinimleri 
+Linux (GCC) altında geliştirildi. Linux ve Windows altında test edilmiştir. CSparse gereklidir.
 
-image::indoor.png[indoor,480,320,align="center"]
-
-image::outdoor.png[outdoor,480,320,align="center"]
-
-
-Kullandığımız işletim sistemi: Ubuntu 14.04 İndigo(Sanal Makina)
-
-Proje kaynak kodlarını elde etmek için tüm işletim sistemlerine uygun olan cmake kurulumunu yaptık.
-Ubuntu cmake kurulum komutu:
-[source,java]
-----
-sudo apt-get install cmake
-----
-Kurulum sonrası terminale aşağıdaki komut yazılarak kaynak kodları elde edildi.
-[source,java]
-----
-svn co https://svn.openslam.org/data/svn/slam6d
-----
-
-image::_1.png[_1,480,320,align="center"]
-
-Kaynak kodları indirdikten sonra içerisindeki *readme.txt* ve *install.txt* dosyalarını inceledik.
-Kodları çalıştırmak için *install.txt* dosyası içeriğini takip ettik.
-
-Aşağıda bu adımlara ve bu adımları uygularken elde ettiğimiz görüntülere yer vereceğiz. İlk adımlardaki işlemler ön hazırlık adımları olduğu için ekran görüntülerini 8. 9. ve 10. adımlarda koyduk.
-
-*1.Adım:*
-[source,java]
-----
-echo deb http://archive.ubuntu.com/ubuntu trusty main universe | sudo tee -a /etc/apt/sources.list > /dev/null
-----
-*2.Adım:* Güncelleme işlemi.
-[source,java]
-----
-sudo apt-get update
-----
-*3.Adım:*
-----
-sudo apt-get install --no-install-recommends equivs subversion
-----
-
-image::_2.png[_2,480,320,align="center"]
-
-*Sonraki adım:* 
-----
-svn checkout svn://svn.code.sf.net/p/slam6d/code/trunk slam6d-code
-----
-
-*4.Adım:* Klasör değiştirme işlemi.
-[source,java]
-----
-cd slam6d-code
-----
-*5.Adım:*
-[source,java]
-----
-equivs-build doc/equivs/control
-----
-*6.Adım:*
-[source,java]
-----
-sudo dpkg -i 3dtk-build-deps_1.0_all.deb
-----
-*7.Adım:*
-[source,java]
-----
-sudo apt-get -f install --no-install-recommends
-----
-*8.Adım:*
-[source,java]
-----
-make
-----
-Bu işlem sonucu elde ettiğimiz sonuç çıktısı aşağıdadır.
-
-image::adim8.png[adim8,480,320,align="center"]
-
-*9.Adım:*
-[source,java]
-----
-bin/slam6D dat
-----
-Bu işlem sonucu elde ettiğimiz sonuç çıktısı aşağıdadır.
-
-image::adim9.png[adim9,480,320,align="center"]
-
-*10.Adım:*
-[source,java]
-----
-bin/show dat
-----
-Bu işlem sonucu elde ettiğimiz sonuç çıktısı aşağıdadır.
-
-image::soncikti.png[soncikti,800,480,align="center"]
-
-=== 1.1 Kaynak Klasör İçindeki Dökümanların İncelenmesi
-
-PROJEKSİYON TABANLI 3D LAZER TARAYICI
-
-Kurulum ve Hedef
-
-Kurulum
-Video,bir lazer çizgisinin nesnenin üzerinde hareket ettiği, köşede yer alıyor.
--90 derece açı bulunuyor.
--Her iki duvarda dama tahtaları bulunuyor.
--Arkaplanda değişiklik yok.
--Kamera otomatik ayarlanmıyor.
-
-HEDEF
-Nesnenin 3D modellenmesi
-3D nokta bulutu(X,Y,Z)
-Nokta renkleri(R,G,B)
-
-image::_3DLaserScanner-1.png[_3DLaserScanner-1,480,320,align="center"]
+ 
+== Hızlı Kurulum Kılavuzu (Depo-repository- İle)
 
 
-*ADIM 1:* Laser Çizgileri Algılama
-Her çerçeve için lazer çizgisi olmayan çerçeve farkı hesaplanır.
-Kırmızı pikselleri bulunur ve vurgulanır.
-2'den daha az kırmızı komşusu olan tüm kırmızı pikselleri çıkarıp gürültünün bir kısmından kurtulun.
-Hatları algılamak için Hough dönüşümünü kullanılır ve yeşil renkte çizilir
+ $ svn co http://www.openslam.org/data/svn/hog-man
+ 
+image::1.PNG[Login,700,1200,align="center"]
+ 
+ $ cd hog-man/trunk/
+ $ bash               # if not already running
+ 
+image::2.PNG[Login,700,1200,align="center"]
+ 
+ $ source setlibpath
+ 
+image::3.PNG[Login,700,1200,align="center"]
+ 
+ $ ./configure
+ 
+image::4.PNG[Login,700,1200,align="center"]
 
-image::_3DLaserScanner-2.png[_3DLaserScanner-2,480,320,align="center"]
+ $ make
+ 
+image::5.PNG[Login,700,1200,align="center"]
 
+Make işlemi, ikili dosyalar ./bin içerisindeyken trunk / lib'de paylaşılan nesneler kümesi üretir. İkili dosyaları yürütürken LD_LIBRARY_PATH ortam değişkeninin trunk / lib / dizinine doğru şekilde işaret ettiğinden emin olun. 
+Genellikle trunk/ içinde setlibpath komutu ,şu şekilde verilir:
+       giorgio@brixx:~/hog-man/trunk$ source setlibpath
+	   
+=== Kurulum Kılavuzu HOG-Man (2D)
 
-*ADIM 2:* 3D nesne noktaları
-Nesneye ait olan noktaların pikselleri göz önüne alındığında, 3D nokta bulutu almak istiyoruz.
-Önce kamerayı kalibre etmeniz gerekiyor - İçsel ve dışsal parametreleri bulun.
-Lazer çizgilerinden doğrusal olmayan 3 noktayı alarak lazer düzlemini bulunuz.
-Kameradan ve lazer düzleminden başlayarak ışınların kesiştiği noktalar olarak 3D koordinatları bulun.
-Nokta bulutunu görüntülemek için görüntüleme programı kullanılır.
+  kullanımı: hogman2d [options] <graph_file>
 
-*ADIM 3:*
+2B veri kümesini artımlı olarak işleme::
+bin/hogman2d file.graph
+Optimize Edici'nin geçerli durumunu görselleştirmek için gnuplot'u kullanabilirsiniz. Ayrıca, grafiğin durumunu bir dosyaya kaydetmiş oluruz. +
 
-SLAM6D kullanımı
-Teorik olarak slam6D programı, birkaç nokta bulutunu eşleştirebilir ve bunları aynı referans çerçevesine yerleştirebilir.
-Pratikte, birden fazla veri seti kullanırken eşleştirme işlemi çok iyi sonuç vermedi.
-Olası nedeni:
-.pose dosyalarının manuel olarak ayarlanması hatalara açıktır.
-Kullanılmış kümeler daha yüksek örtüşme (daha küçük dönme açısı) gerektirebilir.
-
-image::_3DLaserScanner-3.png[_3DLaserScanner-3,480,320,align="center"]
-
-
-== 2.Projenin Baska veri seti ile çalıştırılması
-
-Bu veri seti http://kos.informatik.uni-osnabrueck.de/3Dscans/ Hannover1 adli veri seti kullandik,çunku boyut olarak idealdi. Diğer veri setiler büyük boyutla olduğu için test edemedik. Veri indirtikren sonra, verinin lokasiyoun aldiktan sonra 
-*Bu komutu calismamiz lazim, veriler test etmek icin*[source,java]
-----
-/slam6d-code$ bin/show -s 1 -e65 /home/huse/Desktop/hannover1
-----
-komutu ile :
-
-image::Hanover_dataSet1.PNG[Hanover_dataSet1,480,80,align="center"]
-
-Aşağıdaki veri seti üzerinde işlem yapmaya çalıştık. Ancak veri seti boyutu 8.8 gb gibi büyük bir değer olduğu için sanal makine için sıkıntı oluşabileceğinden dolayı kullanamadık.
-
-image::Hanover_dataSet2.PNG[Hanover_dataSet2,480,320,align="center"]
-
-Küçük boyuta sahip hannover veri seti üzerinde deneme yapabildik. İşlemler sonucunda elde ettiğimiz görüntü aşağıda yer almaktadır.
+  bin/hogman2d -o file-incrementally.graph -gnuout file.graph | gnuplot
 
 
-image::Hanover_dataSet.PNG[Hanover_dataSet,800,480,align="center"]
 
-== 3. Algoritmanın Kod İçerisinde Bulunması
+Bir 2D veri kümesinin toplu optimizasyonu::
+Bir veri kümesini çevrimdışı çalıştırmak için +
 
-Bu proje, 3D nokta bulutlarını ortak bir koordinat sistemine kaydetmenin yanı sıra sahneyi görüntülemek için bir görüntüleyiciden oluşan bir yazılımdan oluşmaktadır. Kayıt için, genel olarak tutarlı bir sahne yaratmayı amaçlayan küresel gevşeme yöntemlerinin yanı sıra farklı ICP en aza indirme algoritmaları da seçilebilir. Nokta bulutları için çeşitli formatlar desteklenmekte, yeni formatlar kolayca uygulanabilmektedir.
+ bin/hogman2d -gnuout -batch -chol file-incrementally.graph | gnuplot
+ 
+=== HOG-Man (3D)
 
-=== 3.1. Değişkenlerin Koddaki Karşılıkları
+ $ bin/hogman3d -h
 
+ kullanımı: hogman3d [options] <graph_file>
 
-[width="100%",options="header,footer"]
-|====================
-|(R, t)  | double
-alignxf[16] |  Dönüşüm
-Matrisi
-|m~i~,d~i~  |class
-PtPair  |  Nokta
-çifti
-| c~m~,c~d~ |double
-cm[3], cd[3]  |  Ağırlık
-Merkezleri
-| m~i~',d~i~' | double**
-m, d |  Merkezleştirilmiş
-Nokta Çiftleri
-| H, U ,
-Λ, V | Matrix |  SVD Matrisleri
-| R | double
-transMat[16] |  Matrix olarak pozisyon<o:p></o:p>
-| (x~n~, y~n~, z~n~) | double
-rPos[3] |  n. ‘inci
-3D Taramanın Pozisyonu
-* | (θ~x,n~, θ~x,n~, θ~x,n~)| double
-rPostheta[3] |  n. ‘inci 3D Taramanın Rotasyonu
-|====================
+Artan biçimde bir 3B veri kümesini işleme::
 
-=== 3.2. Kodun İncelenmesi
+bin/hogman3d file.graph
 
-Projenin main fonksiyonu *src/slam6d* dizinindeki *slam6D.cc* dosyasının içerisinde yer almaktadır.
+Optimize Edicinin geçerli durumunu görselleştirmek için graph_viewer kullanabilirsiniz. Ayrıca, grafın durumunu bir dosyaya kayıt edilebilirsiniz.
 
-Klasör içerisinde çok fazla kod mevcuttur. Bu kodların klasör yolu: *slam6d-code>src>slam6d*
+ bin/hogman3d -o file-incrementally.graph -guiout file.graph | bin/graph_viewer
 
-image::kaynakcode.PNG[kaynakcode,480,160,align="center"]
+Bir 3B veri kümesinin toplu optimizasyonu::
+Bir veri kümesini çevrimdışı çalıştırmak için;
 
-Bulunabilen kodlar:
+ bin/hogman3d -guiout -batch -chol file-incrementally.graph | bin/graph_viewer
+ 
 
-image::k1.png[k1,480,160,align="center"]
-
-Bu formüllerin kullanıldığı code dosyasının yolu: *slam6d-code>src>slam6d>icp6Dquat.cc*
-
-image::formul4.PNG[]
-image::formula5.PNG[]
-
-*Formül 6:*
-
-image::k2.png[k2,320,160,align="center"]
-image::formul6.PNG[]
-
-Diğer formüllerden biri için code dosya yolu: *slam6d-code>src>slam6d>icp6Dsvd.cc*
-
-image::k3.png[k3,240,180,align="center"]
-image::rvu.PNG[]
+ 130201045 Muhammed CELEPCİ::
+ 110201121 Osman AKTÜRK::
+ 130201126 Fahri KARACA::
